@@ -35,6 +35,36 @@ if (!checkAuth()) {
 
 // Logout functionality
 document.addEventListener('DOMContentLoaded', () => {
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const sidebar = document.querySelector('.sidebar');
+    
+    if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+        
+        // إغلاق القائمة عند الضغط على أي رابط
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        });
+        
+        // إغلاق القائمة عند الضغط على الخلفية
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768 && 
+                sidebar.classList.contains('active') && 
+                !sidebar.contains(e.target) && 
+                !mobileMenuBtn.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+    }
+    
     // Add logout button handler
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {

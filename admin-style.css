@@ -144,6 +144,33 @@ body {
     padding: 2rem;
 }
 
+/* Mobile Menu Button */
+.mobile-menu-btn {
+    display: none;
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 200;
+    width: 50px;
+    height: 50px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+    transition: all 0.3s;
+}
+
+.mobile-menu-btn:hover {
+    background: var(--primary-dark);
+    transform: scale(1.05);
+}
+
+.mobile-menu-btn:active {
+    transform: scale(0.95);
+}
+
 .page {
     display: none;
 }
@@ -674,6 +701,12 @@ body {
 
 /* Responsive */
 @media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
     .sidebar {
         transform: translateX(100%);
         transition: transform 0.3s;
@@ -681,6 +714,19 @@ body {
     
     .sidebar.active {
         transform: translateX(0);
+        box-shadow: -4px 0 20px rgba(0,0,0,0.2);
+    }
+    
+    /* Overlay للخلفية عند فتح القائمة */
+    .sidebar.active::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: -1;
     }
     
     .main-content {
