@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام الحضور والانصراف | Face Recognition</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- face-api.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <rect width="32" height="32" rx="8" fill="url(#gradient)"/>
+                    <path d="M16 8C13.24 8 11 10.24 11 13C11 15.76 13.24 18 16 18C18.76 18 21 15.76 21 13C21 10.24 18.76 8 16 8ZM16 20C12.67 20 6 21.67 6 25V26H26V25C26 21.67 19.33 20 16 20Z" fill="white"/>
+                    <defs>
+                        <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32">
+                            <stop offset="0%" stop-color="#2196F3"/>
+                            <stop offset="100%" stop-color="#1976D2"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="brand-name">نظام الحضور والانصراف</span>
+            </div>
+            <button id="adminBtn" class="admin-btn">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10 2C6.69 2 4 4.69 4 8C4 11.31 6.69 14 10 14C13.31 14 16 11.31 16 8C16 4.69 13.31 2 10 2ZM10 16C5.33 16 2 18.67 2 20V22H18V20C18 18.67 14.67 16 10 16Z"/>
+                </svg>
+                لوحة التحكم
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-wrapper">
+        <div class="container">
+            <!-- Camera Section -->
+            <div class="camera-card">
+                <div class="card-header">
+                    <h2>التعرف على الوجه</h2>
+                    <div class="status-indicator" id="cameraStatus">
+                        <span class="status-dot"></span>
+                        <span class="status-text">في انتظار الكشف...</span>
+                    </div>
+                </div>
+                
+                <div class="camera-wrapper">
+                    <video id="video" autoplay playsinline></video>
+                    <canvas id="canvas"></canvas>
+                    <div class="camera-overlay" id="overlay">
+                        <div class="scan-frame"></div>
+                        <div class="detection-info" id="detectionInfo">
+                            <p>قف أمام الكاميرا للتعرف التلقائي</p>
+                        </div>
+                        <button id="manualCheckoutBtn" class="manual-checkout-btn" style="display: none;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.58L17 17L22 12M4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z"/>
+                            </svg>
+                            انصراف يدوي
+                        </button>
+                    </div>
+                </div>
+
+                <div class="model-status" id="modelStatus">
+                    <div class="loading-spinner"></div>
+                    <p>جاري تحميل نماذج التعرف على الوجه...</p>
+                </div>
+            </div>
+
+            <!-- Status Messages -->
+            <div class="status-card" id="statusCard" style="display: none;">
+            </div>
+
+            <!-- Stats Dashboard -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M11 9H13V7H11M12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2M11 17H13V11H11V17Z"/>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <p class="stat-label">إجمالي الحضور</p>
+                        <h3 class="stat-value" id="totalAttendance">0</h3>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M16.59,7.58L10,14.17L7.41,11.59L6,13L10,17L18,9L16.59,7.58Z"/>
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <p class="stat-label">إجمالي الانصراف</p>
+                        <h3 class="stat-value" id="totalCheckout">0</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registration Modal -->
+    <div class="modal-overlay" id="registrationModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>تسجيل موظف جديد</h2>
+                <p id="modalDescription">تم اكتشاف وجه جديد، يرجى إدخال البيانات</p>
+            </div>
+            
+            <!-- Capture Progress -->
+            <div class="capture-progress" id="captureProgress" style="display: none;">
+                <!-- Live Preview -->
+                <div class="capture-preview-video">
+                    <video id="modalVideo" autoplay playsinline muted></video>
+                    <div class="preview-frame"></div>
+                </div>
+                
+                <div class="capture-instruction" id="captureInstruction">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z"/>
+                    </svg>
+                    <h3 id="captureInstructionTitle">انظر مباشرة للكاميرا</h3>
+                    <p id="captureInstructionText">سيتم التقاط 5 صور من زوايا مختلفة</p>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="capture-counter">
+                    <span id="captureCount">0</span> / 5
+                </div>
+                <div class="capture-previews" id="capturePreviews"></div>
+            </div>
+            
+            <div class="modal-body" id="modalBody">
+                <div class="form-group">
+                    <label for="modalUserName">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 2C7.24 2 5 4.24 5 7C5 9.76 7.24 12 10 12C12.76 12 15 9.76 15 7C15 4.24 12.76 2 10 2ZM10 14C6.67 14 0 15.67 0 19V20H20V19C20 15.67 13.33 14 10 14Z"/>
+                        </svg>
+                        الاسم الكامل
+                    </label>
+                    <input type="text" id="modalUserName" placeholder="أدخل اسم الموظف" autofocus>
+                </div>
+                <div class="form-group">
+                    <label for="modalUserId">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M14 2H6C4.9 2 4 2.9 4 4V16C4 17.1 4.9 18 6 18H14C15.1 18 16 17.1 16 16V4C16 2.9 15.1 2 14 2ZM10 14C9.45 14 9 13.55 9 13C9 12.45 9.45 12 10 12C10.55 12 11 12.45 11 13C11 13.55 10.55 14 10 14ZM12 9H8V4H12V9Z"/>
+                        </svg>
+                        الرقم الوظيفي
+                    </label>
+                    <input type="text" id="modalUserId" placeholder="أدخل الرقم الوظيفي">
+                </div>
+                <div class="form-group">
+                    <label for="modalDepartment">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M4 3H2V17H4V3ZM18 3H6V17H18V3ZM16 15H8V5H16V15Z"/>
+                        </svg>
+                        القسم
+                    </label>
+                    <input type="text" id="modalDepartment" placeholder="أدخل القسم (اختياري)">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancelRegistration">إلغاء</button>
+                <button class="btn-primary" id="confirmRegistration">تسجيل</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
