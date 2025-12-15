@@ -96,8 +96,9 @@ async function loadModels() {
         console.log('📦 Loading AI models...');
         modelStatus.classList.add('active');
         
-        const MODEL_URL = '/models';
-        const BACKUP_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/';
+        // استخدام CDN أولاً لضمان عمل الموقع أونلاين
+        const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/';
+        const BACKUP_URL = '/models'; // نسخة احتياطية محلية
         
         try {
             await Promise.all([
@@ -105,17 +106,18 @@ async function loadModels() {
                 faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
                 faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
             ]);
+            console.log('✅ Models loaded from CDN');
         } catch {
-            console.log('⚠️ Loading from CDN...');
+            console.log('⚠️ CDN failed, trying local models...');
             await Promise.all([
                 faceapi.nets.ssdMobilenetv1.loadFromUri(BACKUP_URL),
                 faceapi.nets.faceLandmark68Net.loadFromUri(BACKUP_URL),
                 faceapi.nets.faceRecognitionNet.loadFromUri(BACKUP_URL)
             ]);
+            console.log('✅ Models loaded from local files');
         }
         
         modelsLoaded = true;
-        console.log('✅ Models loaded successfully');
         modelStatus.classList.remove('active');
         return true;
     } catch (error) {
