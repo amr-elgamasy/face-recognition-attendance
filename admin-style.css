@@ -26,7 +26,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: var(--gray-100);
+    background: linear-gradient(135deg, #F8FAFC 0%, #E8F4FF 100%);
     direction: rtl;
     display: flex;
     min-height: 100vh;
@@ -211,19 +211,20 @@ body {
 }
 
 .stat-card {
-    background: white;
-    border-radius: 12px;
+    background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+    border-radius: 16px;
     padding: 1.5rem;
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.05);
     transition: all 0.3s;
 }
 
 .stat-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.1);
 }
 
 .stat-icon {
@@ -270,9 +271,10 @@ body {
 
 /* Card */
 .card {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    background: linear-gradient(135deg, #FFFFFF 0%, #FAFBFC 100%);
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.05);
     margin-bottom: 2rem;
 }
 
@@ -301,7 +303,8 @@ body {
 }
 
 .data-table thead {
-    background: var(--gray-50);
+    background: #FFFFFF;
+    border-bottom: 2px solid var(--gray-200);
 }
 
 .data-table th {
@@ -321,7 +324,7 @@ body {
 }
 
 .data-table tbody tr:hover {
-    background: var(--gray-50);
+    background: rgba(33, 150, 243, 0.03);
 }
 
 .no-data {
@@ -516,18 +519,18 @@ body {
 
 /* Employee Card */
 .employee-card {
-    background: white;
+    background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.05);
     transition: all 0.3s;
-    border: 2px solid transparent;
 }
 
 .employee-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-    border-color: var(--primary);
+    box-shadow: 0 8px 16px rgba(33, 150, 243, 0.12);
+    border-color: rgba(33, 150, 243, 0.2);
 }
 
 .employee-card-header {
